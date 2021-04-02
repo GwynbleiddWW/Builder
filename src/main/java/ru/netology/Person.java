@@ -5,8 +5,19 @@ import java.util.Objects;
 public class Person {
     protected String name;
     protected String surname;
-    protected int age;
+    protected Integer age;
     protected String address;
+
+    public Person(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+    }
+
+    public Person(String name, String surname, Integer age) {
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+    }
 
     public Person(PersonBuilder builder) {
         this.name = builder.name;
@@ -23,7 +34,7 @@ public class Person {
         return surname;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -36,7 +47,7 @@ public class Person {
     }
 
     public boolean hasAge() {
-        return age != 0;
+        return age != null;
     }
 
     public boolean hasAddress() {
@@ -44,6 +55,7 @@ public class Person {
     }
 
     public void happyBirthday() {
+        if (age != null)
         this.age++;
     }
 
@@ -59,10 +71,14 @@ public class Person {
                 hash(getName(), getSurname(), getAge(), getAddress());
     }
 
+    public PersonBuilder newChildBuilder(int age) {
+        return new PersonBuilder().setSurname(name).setAge(age).setAddress(address);
+    }
+
     public static class PersonBuilder {
         protected String name;
         protected String surname;
-        protected int age;
+        protected Integer age;
         protected String address;
 
         public PersonBuilder setName(String name) {
@@ -89,20 +105,15 @@ public class Person {
             if (name == null | surname == null) {
                 throw new IllegalArgumentException("Name and surname cannot be empty");
             }
-            if (age < 0 | age >= 100) {
-                throw new IllegalArgumentException("Age is incorrect");
-            }
+            if (age!=null) {
+                if (age < 0 | age >= 100) {
+                    throw new IllegalArgumentException("Age is incorrect");
+                }
+            } else {
+                    System.out.println("Age not specified");
+                }
             return new Person(this);
         }
 
-        public Person newChildBuild(){
-            if (name == null) {
-                throw new IllegalArgumentException("Name cannot be empty");
-            }
-            setSurname("Zeus");
-            setAge(8);
-            setAddress("Texas");
-            return new Person(this);
-        }
     }
 }
